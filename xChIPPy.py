@@ -1587,7 +1587,7 @@ def calculateChromosomalCoverageVector(analysis, chrom, window_size=100000):
                         "chrX": 171031299,
                         "chrY": 91744698 }
     if not (chrom in mouse_chr_sizes.keys()):
-        if printVerboseLog:
+        if analysis.printVerboseLog:
             print "ERROR calculateChromosomalCoverageVector: No data on chromosome <", chrom, "> is available."
             return None
     chrom_end=mouse_chr_sizes[chrom]
@@ -1619,7 +1619,7 @@ def differenceCoverageVector(v1, v2):
     """
     return v1-v2
 
-def plotDifCoverageVectors(coverageVectorDict, filename=None):
+def plotDifCoverageVectors(coverageVectorDict, filename=None, y_max=12000):
     difDoxCtrlVector=dict()
     for genotype in ("wt", "ko"):
         difDoxCtrlVector[genotype]=foldDifferenceCoverageVector( coverageVectorDict[samples[genotype]["dox"][0]], coverageVectorDict[samples[genotype]["ctrl"][0]] )
@@ -1629,33 +1629,33 @@ def plotDifCoverageVectors(coverageVectorDict, filename=None):
     with plt.style.context('seaborn-white'):
         ax1=fig.add_subplot(gs[0, 0])
         ax1.set_title("WT coverage Ctrl")
-        ax1.set_ylim(0, 12000)
-        ax1.bar(x,coverageVectorDict[samples["wt"]["ctrl"][0]],  color="blue")
+        ax1.set_ylim(0, y_max) #12000)
+        ax1.bar(x,coverageVectorDict[samples["wt"]["ctrl"][0]]) #,  color="blue")
     with plt.style.context('seaborn-white'):
         ax2=fig.add_subplot(gs[1, 0])
         ax2.set_title("WT coverage +Dox")
-        ax2.set_ylim(0, 12000)
-        ax2.bar(x,coverageVectorDict[samples["wt"]["dox"][0]],  color="blue")
+        ax2.set_ylim(0, y_max) # 12000)
+        ax2.bar(x,coverageVectorDict[samples["wt"]["dox"][0]]) #,  color="blue")
     with plt.style.context('seaborn-white'):
         ax3=fig.add_subplot(gs[2, 0])
         ax3.set_title("WT +Dox/Ctrl")
         ax3.set_ylim(-1, 1)
-        ax3.bar(x,difDoxCtrlVector["wt"],  color="orange")
+        ax3.bar(x,difDoxCtrlVector["wt"]) #,  color="orange")
     with plt.style.context('seaborn-white'):
         ax4=fig.add_subplot(gs[3, 0])
         ax4.set_title("Ubn1/2 coverage Ctrl")
-        ax4.set_ylim(0, 12000)
-        ax4.bar(x,coverageVectorDict[samples["ko"]["ctrl"][0]],  color="blue")
+        ax4.set_ylim(0, y_max) # 12000)
+        ax4.bar(x,coverageVectorDict[samples["ko"]["ctrl"][0]]) #,  color="blue")
     with plt.style.context('seaborn-white'):
         ax5=fig.add_subplot(gs[4, 0])
         ax5.set_title("Ubn1/2 coverage +Dox")
-        ax5.set_ylim(0, 12000)
-        ax5.bar(x,coverageVectorDict[samples["ko"]["dox"][0]],  color="blue")
+        ax5.set_ylim(0, y_max) # 12000)
+        ax5.bar(x,coverageVectorDict[samples["ko"]["dox"][0]]) #,  color="blue")
     with plt.style.context('seaborn-white'):
         ax6=fig.add_subplot(gs[5, 0])
         ax6.set_title("Ubn1/2 +Dox/Ctrl")
         ax6.set_ylim(-1, 1)
-        ax6.bar(x,difDoxCtrlVector["ko"],  color="orange")
+        ax6.bar(x,difDoxCtrlVector["ko"]) #,  color="orange")
     fig.tight_layout()
     if filename is None:
         plt.show()
@@ -1663,27 +1663,34 @@ def plotDifCoverageVectors(coverageVectorDict, filename=None):
         fig.savefig(DATA_FILE_PATH+filename)
     plt.close("ChromosomeCoverage")
                                     
-def analyseChromosomeCoverage(analysis, chrom, window_size=100000):
+def analyseChromosomeCoverage(analysis, chrom, window_size=100000, filename=None, y_max=12000):
     coverageVectorDict=calculateChromosomalCoverageVector(analysis, chrom, window_size=window_size)
-    plotDifCoverageVectors(coverageVectorDict)
+    plotDifCoverageVectors(coverageVectorDict, filename=filename, y_max=y_max)
     
 
     
 
 # Analyse ATACseq eperiments -----------------------------------------------------------------------------------------------------
 
-ATACseq_experiments = [ ("WT1", "ATAC1_WT.sam"), ("WT1_DOX", "ATAC1_WT_DOX.sam"), ("KO1", "ATAC1_KO.sam"), ("KO1_DOX", "ATAC1_KO_DOX.sam") ]
-ATACSEQ_SAM_FOLDER = "/home/linux/Asun_ChIPseq/ATACSec/"
-ATACSEQ_DATA_FILE_PATH="/home/linux/Asun_ChIPseq/ATACSec/ATACseq_analysis_q10/"
+# ATACseq_experiments = [ ("WT1", "ATAC1_WT.sam"), ("WT1_DOX", "ATAC1_WT_DOX.sam"), ("KO1", "ATAC1_KO.sam"), ("KO1_DOX", "ATAC1_KO_DOX.sam") ]
+# ATACSEQ_SAM_FOLDER = "/home/linux/Asun_ChIPseq/ATACSec/"
+# ATACSEQ_DATA_FILE_PATH="/home/linux/Asun_ChIPseq/ATACSec/ATACseq_analysis_q10/"
+ATACseq_experiments = [ ("WT3", "ATAC3_WT_NT.sam"), ("WT3_DOX", "ATAC3_WT_DOX.sam"), ("KO3", "ATAC3_KO_NT.sam"), ("KO3_DOX", "ATAC3_KO_DOX.sam") ]
+ATACSEQ_SAM_FOLDER = "/home/linux/NEW_ATACSeq/"
+ATACSEQ_DATA_FILE_PATH="/home/linux/NEW_ATACSeq/NEW_ATACSeq_analysis_w100_r5_q10/"
+#ATACSEQ_DATA_FILE_PATH="/home/linux/NEW_ATACSeq/NEW_ATACSeq_analysis_q10/"
 
 ATACSEQ_ANALYSIS = True
-LOAD_CURRENT_ANALYSIS = True
-PERFORM_EXTENSIVE_ANALYSIS = False
+LOAD_CURRENT_ANALYSIS = False
+PERFORM_EXTENSIVE_ANALYSIS = True
 
 if ATACSEQ_ANALYSIS:
     DATA_FILE_PATH = ATACSEQ_DATA_FILE_PATH
-    ATAC_wt_samples = { "ctrl": ["WT1"], "dox": ["WT1_DOX"] }
-    ATAC_ko_samples = { "ctrl": ["KO1"], "dox": ["KO1_DOX"] }
+    # ATAC_wt_samples = { "ctrl": ["WT1"], "dox": ["WT1_DOX"] }
+    # ATAC_ko_samples = { "ctrl": ["KO1"], "dox": ["KO1_DOX"] }
+    ATAC_wt_samples = { "ctrl": ["WT3"], "dox": ["WT3_DOX"] }
+    ATAC_ko_samples = { "ctrl": ["KO3"], "dox": ["KO3_DOX"] }
+
     samples = {"wt": ATAC_wt_samples, "ko": ATAC_ko_samples}
     expLst=[]
     for genotype in ("wt", "ko"):
@@ -1707,8 +1714,8 @@ if ATACSEQ_ANALYSIS:
         x_genes = analysis.get_x_linked_genes()
         a_genes = analysis.get_autosomal_genes()
         for experiment_name, filename in ATACseq_experiments:
-            analysis.addATACseqExperiment(experiment_name, ATACSEQ_SAM_FOLDER+filename, aQualValue=10) # , window=100, maxReadsPerPos=5)
-        analysis.saveAnalysis(ATACSEQ_DATA_FILE_PATH)
+            analysis.addATACseqExperiment(experiment_name, ATACSEQ_SAM_FOLDER+filename, aQualValue=10, window=100, maxReadsPerPos=5)
+        # analysis.saveAnalysis(ATACSEQ_DATA_FILE_PATH)
 
     # normalize to autosomal coverage
     reads_max = max([ analysis.ExperimentStatistics[en]["coverageA"] for en in analysis.getExperimentList() ])
@@ -1717,7 +1724,7 @@ if ATACSEQ_ANALYSIS:
         analysis.normalizeExperiment(en, nf)
         print en,"normalization factor =",nf
 
-    # analysis.saveAnalysis(ATACSEQ_DATA_FILE_PATH)
+    analysis.saveAnalysis(ATACSEQ_DATA_FILE_PATH)  # save analysis with normalization factors
     experiment_names=analysis.getExperimentList()
     print "Experiments:", experiment_names
 
@@ -1732,8 +1739,8 @@ if ATACSEQ_ANALYSIS:
         topNflopGeneProfiles()
         ExpressionGroupProfiles()
 
-        analyseChromosomeCoverage(analysis,"chr1")    # set ylim 0, 25000 and  -1, 1
-        analyseChromosomeCoverage(analysis,"chrx")    # set ylim 0, 12000 and  -3, 3 (-1, 1 for zoom is better)
+        analyseChromosomeCoverage(analysis,"chr1", filename="ATACSeq_chr1.png", y_max=25000)    # set ylim 0, 25000 and  -1, 1
+        analyseChromosomeCoverage(analysis,"chrX", filename="ATACSeq_chrX.png", y_max=12000)    # set ylim 0, 12000 and  -3, 3 (-1, 1 for zoom is better)
 
 
 
