@@ -1675,21 +1675,27 @@ def analyseChromosomeCoverage(analysis, chrom, window_size=100000, filename=None
 # ATACseq_experiments = [ ("WT1", "ATAC1_WT.sam"), ("WT1_DOX", "ATAC1_WT_DOX.sam"), ("KO1", "ATAC1_KO.sam"), ("KO1_DOX", "ATAC1_KO_DOX.sam") ]
 # ATACSEQ_SAM_FOLDER = "/home/linux/Asun_ChIPseq/ATACSec/"
 # ATACSEQ_DATA_FILE_PATH="/home/linux/Asun_ChIPseq/ATACSec/ATACseq_analysis_q10/"
-ATACseq_experiments = [ ("WT3", "ATAC3_WT_NT.sam"), ("WT3_DOX", "ATAC3_WT_DOX.sam"), ("KO3", "ATAC3_KO_NT.sam"), ("KO3_DOX", "ATAC3_KO_DOX.sam") ]
-ATACSEQ_SAM_FOLDER = "/home/linux/NEW_ATACSeq/"
-ATACSEQ_DATA_FILE_PATH="/home/linux/NEW_ATACSeq/NEW_ATACSeq_analysis_w100_r5_q10/"
+# ATACseq_experiments = [ ("WT3", "ATAC3_WT_NT.sam"), ("WT3_DOX", "ATAC3_WT_DOX.sam"), ("KO3", "ATAC3_KO_NT.sam"), ("KO3_DOX", "ATAC3_KO_DOX.sam") ]
+# ATACSEQ_SAM_FOLDER = "/home/linux/NEW_ATACSeq/"
+ATACseq_experiments = [ ("WT2", "ATAC2_WT.sam"), ("WT2_DOX", "ATAC2_WT_DOX.sam"), ("KO2", "ATAC2_KO.sam"), ("KO2_DOX", "ATAC2_KO_DOX.sam") ]
+ATACSEQ_SAM_FOLDER = "/home/linux/ATACSeq2/"
+ATACSEQ_DATA_FILE_PATH="/home/linux/ATACSeq2/ATACSeq_analysis_w100_r5_q10/"
+#ATACSEQ_DATA_FILE_PATH="/home/linux/NEW_ATACSeq/NEW_ATACSeq_analysis_w100_r5_q10/"
 #ATACSEQ_DATA_FILE_PATH="/home/linux/NEW_ATACSeq/NEW_ATACSeq_analysis_q10/"
 
 ATACSEQ_ANALYSIS = True
 LOAD_CURRENT_ANALYSIS = False
+LOAD_ALL_ATACSEQ_ANALYSIS = True
 PERFORM_EXTENSIVE_ANALYSIS = True
 
 if ATACSEQ_ANALYSIS:
     DATA_FILE_PATH = ATACSEQ_DATA_FILE_PATH
     # ATAC_wt_samples = { "ctrl": ["WT1"], "dox": ["WT1_DOX"] }
     # ATAC_ko_samples = { "ctrl": ["KO1"], "dox": ["KO1_DOX"] }
-    ATAC_wt_samples = { "ctrl": ["WT3"], "dox": ["WT3_DOX"] }
-    ATAC_ko_samples = { "ctrl": ["KO3"], "dox": ["KO3_DOX"] }
+    # ATAC_wt_samples = { "ctrl": ["WT3"], "dox": ["WT3_DOX"] }
+    # ATAC_ko_samples = { "ctrl": ["KO3"], "dox": ["KO3_DOX"] }
+    ATAC_wt_samples = { "ctrl": ["WT2"], "dox": ["WT2_DOX"] }
+    ATAC_ko_samples = { "ctrl": ["KO2"], "dox": ["KO2_DOX"] }
 
     samples = {"wt": ATAC_wt_samples, "ko": ATAC_ko_samples}
     expLst=[]
@@ -1710,12 +1716,67 @@ if ATACSEQ_ANALYSIS:
             analysis.normalizeExperiment(en, nf)
             print en,"normalization factor =",nf"""
     else:
-        analysis = XchipAnalysis(Annotation_filename='/home/linux/Asun_ChIPseq/Programs/current_analysis/Annotation')
-        x_genes = analysis.get_x_linked_genes()
-        a_genes = analysis.get_autosomal_genes()
-        for experiment_name, filename in ATACseq_experiments:
-            analysis.addATACseqExperiment(experiment_name, ATACSEQ_SAM_FOLDER+filename, aQualValue=10, window=100, maxReadsPerPos=5)
-        # analysis.saveAnalysis(ATACSEQ_DATA_FILE_PATH)
+        if LOAD_ALL_ATACSEQ_ANALYSIS:
+            ATAC_wt_samples = { "ctrl": ["WT1", "WT2", "WT3"], "dox": ["WT1_DOX", "WT2_DOX", "WT3_DOX"] }
+            ATAC_ko_samples = { "ctrl": ["KO1", "KO2", "KO3"], "dox": ["KO1_DOX", "KO2_DOX", "KO3_DOX"] }
+            samples = {"wt": ATAC_wt_samples, "ko": ATAC_ko_samples}
+            ATACseq_experiments = { "WT1": "/home/linux/Asun_ChIPseq/ATACSec/ATACseq_analysis_q10/WT1.wig", "WT1_DOX": "/home/linux/Asun_ChIPseq/ATACSec/ATACseq_analysis_q10/WT1_DOX.wig", "KO1": "/home/linux/Asun_ChIPseq/ATACSec/ATACseq_analysis_q10/KO1.wig", "KO1_DOX": "/home/linux/Asun_ChIPseq/ATACSec/ATACseq_analysis_q10/KO1_DOX.wig",
+                                    "WT2": "/home/linux/ATACSeq2/ATACSeq2_p10/WT2.wig", "WT2_DOX": "/home/linux/ATACSeq2/ATACSeq2_p10/WT2_DOX.wig", "KO2": "/home/linux/ATACSeq2/ATACSeq2_p10/KO2.wig", "KO2_DOX": "/home/linux/ATACSeq2/ATACSeq2_p10/KO2_DOX.wig",
+                                    "WT3": "/home/linux/NEW_ATACSeq/NEW_ATACSeq_analysis_q10/WT3.wig", "WT3_DOX": "/home/linux/NEW_ATACSeq/NEW_ATACSeq_analysis_q10/WT3_DOX.wig", "KO3": "/home/linux/NEW_ATACSeq/NEW_ATACSeq_analysis_q10/KO3.wig", "KO3_DOX": "/home/linux/NEW_ATACSeq/NEW_ATACSeq_analysis_q10/KO3_DOX.wig" }
+            ATACSEQ_DATA_FILE_PATH="/home/linux/ATACSeq_COMBINED/ATACSeq_analysis_q10/"
+            DATA_FILE_PATH = ATACSEQ_DATA_FILE_PATH
+            analysis = XchipAnalysis()
+
+            inFile = open('/home/linux/Asun_ChIPseq/Programs/current_analysis/Annotation', "rb")               # load annotation pickel file
+            analysis.Annotation = pickle.load(inFile)
+            inFile.close()
+            x_genes = analysis.get_x_linked_genes()
+            a_genes = analysis.get_autosomal_genes()
+
+            expStat = dict()                                                            # read ExperimentStatistics and printVerboseLog from a pickel files
+            printVerboseLog = False
+            for expStatFolder in ["/home/linux/Asun_ChIPseq/ATACSec/ATACseq_analysis_q10/", "/home/linux/ATACSeq2/ATACSeq2_p10/", "/home/linux/NEW_ATACSeq/NEW_ATACSeq_analysis_q10/" ]:
+                inFile = open(expStatFolder + "ExperimentStatistics", "rb")
+                state = pickle.load(inFile)
+                inFile.close()
+                if state["printVerboseLog"]:
+                    printVerboseLog = True
+                for exp in state["ExperimentStatistics"].keys():
+                    expStat[exp]=state["ExperimentStatistics"][exp]
+            analysis.printVerboseLog=printVerboseLog
+            
+            expLst=[]
+            for genotype in ["wt", "ko"]:                                               # read experiments
+                for condition in ["ctrl", "dox"]:
+                    if genotype == "wt":
+                        experiment_name="WT"
+                    else:
+                        experiment_name="KO"
+                    if condition == "dox":
+                        experiment_name+="_DOX"
+                    expLst.append(experiment_name)
+                    data = HTSeq.GenomicArray("auto", stranded=False, typecode='i')
+                    statistics = dict()
+                    for exp in samples[genotype][condition]:
+                        fn = ATACseq_experiments[exp]
+                        BEDreader = HTSeq.BED_Reader(fn)                             # read the wiggle file record for record and store in GenomicArray
+                        for rec in BEDreader:
+                            data[rec.iv]+=int(float(rec.name))
+                        for k in expStat[exp]:
+                            if k in statistics.keys():
+                                statistics[k]+=expStat[exp][k]
+                            else:
+                                statistics[k]=expStat[exp][k]
+                    analysis.Experiments[experiment_name]=data                       # add the GenomicArray to the dictionary of the XchipAnalysis object
+                    analysis.ExperimentStatistics[experiment_name]=statistics        # add ExperimentStatistics to the dictionary of the XchipAnalysis object
+            samples={ "wt": {"ctrl": ["WT"], "dox": ["WT_DOX"]}, "ko": {"ctrl": ["KO"], "dox": ["KO_DOX"]} }
+        else:            
+            analysis = XchipAnalysis(Annotation_filename='/home/linux/Asun_ChIPseq/Programs/current_analysis/Annotation')
+            x_genes = analysis.get_x_linked_genes()
+            a_genes = analysis.get_autosomal_genes()
+            for experiment_name, filename in ATACseq_experiments:
+                analysis.addATACseqExperiment(experiment_name, ATACSEQ_SAM_FOLDER+filename, aQualValue=10, window=100, maxReadsPerPos=5)
+            # analysis.saveAnalysis(ATACSEQ_DATA_FILE_PATH)
 
     # normalize to autosomal coverage
     reads_max = max([ analysis.ExperimentStatistics[en]["coverageA"] for en in analysis.getExperimentList() ])
